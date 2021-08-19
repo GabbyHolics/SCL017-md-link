@@ -1,4 +1,22 @@
 {
   "name": "md-links",
-  "version": "0.1.0"
+  "version": "1.0.0",
+  "description": "Libreria md-links",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "init"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GabbyHolics/SCL017-md-link.git"
+  },
+  "author": "Karenth Gabriela Contreras",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GabbyHolics/SCL017-md-link/issues"
+  },
+  "homepage": "https://github.com/GabbyHolics/SCL017-md-link#readme"
 }

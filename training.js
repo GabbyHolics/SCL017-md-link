@@ -5,7 +5,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const documentDirection = 'pedro.md'
+const documentDirection = process.argv[2]
 
 const file = fs.readFile(documentDirection, 'utf8' , (err, data) => {
   if (err) {
@@ -22,7 +22,7 @@ const typePath = path.extname(documentDirection)
 console.log(typePath);
 
 // Intenta imprimir en consola la lista de archivos en una carpeta.
-const folder = '/Users/Gabbyholics/Desktop/SCL017-md-link/folder1';
+const folder = process.argv[2];
     fs.readdir(folder, (err,files) => {
         files.forEach(file => {
             console.log(file); 
@@ -30,10 +30,19 @@ const folder = '/Users/Gabbyholics/Desktop/SCL017-md-link/folder1';
     });
 
 //Une dos rutas
-const folder2 = '/Users/Gabbyholics/Desktop/SCL017-md-link/folder1/folder2'
-const unionPath = path.join(folder,folder2);
+const unionPath = path.join(folder,'folder2');
 console.log(unionPath);
 
 // recorrer todo y hacer una funcion que tenga todos los links. 
+// recursividad 
+function reverse (str) {
+  if (str === "") {
+      return "";
+  } else {
+      return reverse(str.substr(1)) + str.charAt(0);
+  }
+}
 
-// seguir trabanajndo con el parametro
+let reverseStringIs = reverse('freeCodeCamp');
+console.log(reverseStringIs)
+
