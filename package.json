@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "init"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/GabbyHolics/SCL017-md-link/issues"
   },
-  "homepage": "https://github.com/GabbyHolics/SCL017-md-link#readme"
+  "homepage": "https://github.com/GabbyHolics/SCL017-md-link#readme",
+  "devDependencies": {
+    "jest": "^27.0.6"
+  }
 }
