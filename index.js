@@ -10,6 +10,7 @@ fs.stat(routeDirection, (error, stats) => {
             return(error);
         }
         if(stats.isFile()){
+            isArgMdFile
             console.log("es un documento")
             console.log(routeDirection)
         }else if(stats.isDirectory()){
@@ -18,6 +19,12 @@ fs.stat(routeDirection, (error, stats) => {
         }
     }
 )};
+
+const isArgMdFile = () => {
+    const fileExt = path.extname(routeDirection.toLowerCase());
+    const mdExt = '.md';
+    return fileExt === mdExt;
+  };
 typeFolderAndDocument()
 // if (documents) {
 //     fs.readFile(routeDirection, "utf8", (err, data) => {
