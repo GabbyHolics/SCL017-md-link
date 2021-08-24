@@ -4,7 +4,7 @@
   "description": "Libreria md-links",
   "main": "index.js",
   "directories": {
-    "test": "test"
+    "test": "jest"
   },
   "scripts": {
     "test": "jest"
