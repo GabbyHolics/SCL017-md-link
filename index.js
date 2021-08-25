@@ -4,49 +4,58 @@ const path = require("path");
 const routeDirection = path.resolve(process.argv[2]);
 // 2. reconocer que es un archivo o documento
 const typeFolderAndDocument = () => {
-fs.stat(routeDirection, (error, stats) => {
-        if (error) {
-            console.warn('route invalid')
+    fs.stat(routeDirection, (error, stats) => {
+        results = [];
+            if (error) {
+                console.warn('route invalid')
             return(error);
-        }
-        if(stats.isFile()){
-            isArgMdFile
-            console.log("es un documento")
-            console.log(routeDirection)
-        }else if(stats.isDirectory()){
-            console.log("es un archivo")
-            console.log(routeDirection)
-        }
+            } if (stats.isDirectory()) {
+                folder(routeDirection)
+                console.log("es un archivo")
+                console.log(routeDirection)
+            } else if (routeDirection) {
+                results.push(routeDirection)
+            }
+        return results = file ();
     }
 )};
-
-const isArgMdFile = () => {
-    const fileExt = path.extname(routeDirection.toLowerCase());
-    const mdExt = '.md';
-    return fileExt === mdExt;
-  };
 typeFolderAndDocument()
-// if (documents) {
-//     fs.readFile(routeDirection, "utf8", (err, data) => {
-//       if (err) {
-//         console.error(err);
-//         return;
-//       }
-//       console.log(data);
-//     });
-//     console.log(file);
-//   } else if (folder) {
-//     fs.readdir(routeDirection, (_err, files) => {
-//       files.forEach((file) => {
-//         console.log(file);
-//       });
-//     });
-//   }
+// ller 
+const folder = () => {
+    fs.readdir(routeDirection, (err, files) => {
+       if(err){
+            console.warn('No hay archivos')
+        }else if(files){
+            files.forEach((file) => {
+            console.log(file);
+            })
+        }
+    });
+}
+const file = () =>{
+    fs.readFile(routeDirection, "utf8", (err, data) => {
+    if (err) {
+        console.error(err)
+    }// 3. necesito saber su extencion
+    else if (routeDirection){ 
+        const fileExt = path.extname(routeDirection.toLowerCase());
+        const mdExt = '.md';
+        return fileExt === mdExt;
+    }
+    console.log(data);
+  });
+}
+  console.log(file);
+
+// const isArgMdFile = () => {
+//     const fileExt = path.extname(routeDirection.toLowerCase());
+//     const mdExt = '.md';
+//     return fileExt === mdExt;
+//   };
 
 
-// 3. necesito saber su extencion
-// 4.necesito que coloque un archivo valido
-// 5.leer documento.
+//
+// 4
 
 // Crea una funcion que tenga una condicion primero de verificar si es un archivo valido si es valido
 // si es una carpeta que recorra la carpeta y vea si tiene un archivo md/ si es un archivo verificar si es archivo md.
