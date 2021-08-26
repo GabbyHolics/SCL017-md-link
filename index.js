@@ -3,21 +3,20 @@ const fs = require("fs");
 const path = require("path");
 const routeDirection = path.resolve(process.argv[2]);
 // 2. reconocer que es un archivo o documento
-const typeFolderAndDocument = () => {
+const typeFolderAndDocument =  () => {
   fs.stat(routeDirection, (error, stats) => {
-    // results = [];
+    results = [];
     if (error) {
       console.warn("route invalid");
       return error;
     }
     if (stats.isDirectory()) {
         dirFolder(routeDirection);
-      console.log("es un archivo");
-      console.log(routeDirection);
     } else if (stats.isFile()) {
-        dirFile(routeDirection);
+        dirFile(routeDirection)
     }
   });
+
 };
 typeFolderAndDocument();
 // leer
@@ -50,14 +49,13 @@ const readFile = (filePath) => {
 };
 
 const readFilePromise = (filePath) => {
-  return new promise ((resolve,reject) => { 
+  return new Promise ((resolve,reject) => { 
     fs.readFile(filePath, "utf8", (err, data) => {
         if (err) {
            reject(err);
         } else {
             resolve(data);
         }
-        // console.log(data);
       });   
   }); 
 };
@@ -73,6 +71,6 @@ const readFilePromise = (filePath) => {
 //Si no cumple ninguno de los casos mandar un error.
 //Si cumple leer el documento y su contenido
 
-// module.exports = () => {
-//     // recorrer todo y hacer una funcion que tenga todos los links.
-//     }
+module.exports = () => {
+   
+    }
