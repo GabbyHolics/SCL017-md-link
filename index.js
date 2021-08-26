@@ -4,57 +4,68 @@ const path = require("path");
 const routeDirection = path.resolve(process.argv[2]);
 // 2. reconocer que es un archivo o documento
 const typeFolderAndDocument = () => {
-    fs.stat(routeDirection, (error, stats) => {
-        results = [];
-            if (error) {
-                console.warn('route invalid')
-            return(error);
-            } if (stats.isDirectory()) {
-                folder(routeDirection)
-                console.log("es un archivo")
-                console.log(routeDirection)
-            } else if (routeDirection) {
-                results.push(routeDirection)
-            }
-        return results = file ();
+  fs.stat(routeDirection, (error, stats) => {
+    // results = [];
+    if (error) {
+      console.warn("route invalid");
+      return error;
     }
-)};
-typeFolderAndDocument()
-// ller 
-const folder = () => {
-    fs.readdir(routeDirection, (err, files) => {
-       if(err){
-            console.warn('No hay archivos')
-        }else if(files){
-            files.forEach((file) => {
-            console.log(file);
-            })
-        }
-    });
-}
-const file = () =>{
-    fs.readFile(routeDirection, "utf8", (err, data) => {
-    if (err) {
-        console.error(err)
-    }// 3. necesito saber su extencion
-    else if (routeDirection){ 
-        const fileExt = path.extname(routeDirection.toLowerCase());
-        const mdExt = '.md';
-        return fileExt === mdExt;
+    if (stats.isDirectory()) {
+        dirFolder(routeDirection);
+      console.log("es un archivo");
+      console.log(routeDirection);
+    } else if (stats.isFile()) {
+        dirFile(routeDirection);
     }
-    console.log(data);
   });
-}
-  console.log(file);
+};
+typeFolderAndDocument();
+// leer
+const dirFolder = (path) => {
+  fs.readdir(path, (err, files) => {
+    if (err) {
+      console.warn("No hay archivos");
+    } else if (files) {
+      files.forEach((file) => {
+        console.log(file);
+      });
+    }
+  });
+};
+// promesa
+const dirFile = (doc) => {
+  const fileExt = path.extname(doc.toLowerCase());
+  const mdExt = ".md";
+  if (fileExt === mdExt) {
+    readFile(doc);
+  } else {
+    console.error("no es md");
+  }
+};
 
-// const isArgMdFile = () => {
-//     const fileExt = path.extname(routeDirection.toLowerCase());
-//     const mdExt = '.md';
-//     return fileExt === mdExt;
-//   };
+const readFile = (filePath) => {
+  readFilePromise(filePath).then((data)=> {
+      console.log(data)
+  })
+};
+
+const readFilePromise = (filePath) => {
+  return new promise ((resolve,reject) => { 
+    fs.readFile(filePath, "utf8", (err, data) => {
+        if (err) {
+           reject(err);
+        } else {
+            resolve(data);
+        }
+        // console.log(data);
+      });   
+  }); 
+};
 
 
-//
+//   console.log(file);
+
+
 // 4
 
 // Crea una funcion que tenga una condicion primero de verificar si es un archivo valido si es valido

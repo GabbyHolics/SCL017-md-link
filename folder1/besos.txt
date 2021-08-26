@@ -1,0 +1,2 @@
+try cath se usa cuando usamos async await
+
