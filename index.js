@@ -3,32 +3,48 @@ const fs = require("fs");
 const path = require("path");
 const routeDirection = path.resolve(process.argv[2]);
 // 2. reconocer que es un archivo o documento
-const typeFolderAndDocument =  () => {
-  fs.stat(routeDirection, (error, stats) => {
-    results = [];
-    if (error) {
-      console.warn("route invalid");
-      return error;
-    }
-    if (stats.isDirectory()) {
-        dirFolder(routeDirection);
-    } else if (stats.isFile()) {
-        dirFile(routeDirection)
-    }
+const typeFolderAndDocument = () => {
+  return new Promise((resolve, reject) => {
+    fs.stat(routeDirection, (error, stats) => {
+      results = [];
+      if (error) {
+        reject(error)
+        return error;
+      }
+      if (stats.isDirectory()) {
+          resolve(dirFolder(routeDirection));
+      } else if (stats.isFile()) {
+        resolve(dirFile(routeDirection));
+      }
+    });
   });
-
 };
 typeFolderAndDocument();
 // leer
-const dirFolder = (path) => {
-  fs.readdir(path, (err, files) => {
-    if (err) {
-      console.warn("No hay archivos");
-    } else if (files) {
+const dirFolder = (dirPath) => {
+  const pathFolder = dirPath;
+  readFolderPromise(pathFolder)
+    .then((files) => {
       files.forEach((file) => {
-        console.log(file);
+        const fullPath = path.join(pathFolder, file);
+        typeFolderAndDocument(fullPath);
+        console.log(fullPath)
       });
-    }
+    })
+    .catch((err) => {
+      console.log("could not find directory " + pathFolder);
+    });
+};
+
+const readFolderPromise = (filePath) => {
+  return new Promise((resolve, reject) => {
+    fs.readdir(filePath, (err, files) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(files);
+      }
+    });
   });
 };
 // promesa
@@ -43,26 +59,24 @@ const dirFile = (doc) => {
 };
 
 const readFile = (filePath) => {
-  readFilePromise(filePath).then((data)=> {
-      console.log(data)
-  })
+  readFilePromise(filePath).then((data) => {
+    console.log(data);
+  });
 };
 
 const readFilePromise = (filePath) => {
-  return new Promise ((resolve,reject) => { 
+  return new Promise((resolve, reject) => {
     fs.readFile(filePath, "utf8", (err, data) => {
-        if (err) {
-           reject(err);
-        } else {
-            resolve(data);
-        }
-      });   
-  }); 
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
 };
 
-
 //   console.log(file);
-
 
 // 4
 
@@ -71,6 +85,4 @@ const readFilePromise = (filePath) => {
 //Si no cumple ninguno de los casos mandar un error.
 //Si cumple leer el documento y su contenido
 
-module.exports = () => {
-   
-    }
+module.exports = () => {};
