@@ -3,38 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const markdownLinkExtractor = require("markdown-link-extractor");
 const routeDirection = path.resolve(process.argv[2]);
-
-// 2. reconocer que es un archivo o documento
-const typeFolderAndDocument = (routeDirection) => {
-  return new Promise((resolve, reject) => {
-    // try {
-    //   if(verifyFolder(routeDirection)) {
-    //     dirFolder(routeDirection)
-    //   }
-    //   else if(verifyFile(routeDirection)) {
-    //     dirFile()
-    //   }
-    // } catch (error) {
-    //   console.warn('routing no validate')
-    // }
-    fs.stat(routeDirection, (error, stats) => {
-      results = [];
-      if (error) {
-        reject(error);
-      }
-      if (stats.isDirectory()) {
-        resolve(dirFolder(routeDirection));
-      } else if (stats.isFile()) {
-        resolve(dirFile(routeDirection));
-      }
-    });
-  });
-};
-typeFolderAndDocument(routeDirection);
-const linkExtractor = (fileData) => {
-  const links = markdownLinkExtractor(fileData, true);
-  links.forEach((link) => console.log(link));
-};
+// http
 
 // leer
 const dirFolder = (dirPath) => {
@@ -76,7 +45,7 @@ const dirFile = (doc) => {
 
 const readFile = (filePath) => {
   readFilePromise(filePath).then((data) => {
-    linkExtractor(data);
+    linkExtractor(data); // filePath,options
   });
 };
 
@@ -92,13 +61,46 @@ const readFilePromise = (filePath) => {
   });
 };
 
-//   console.log(file);
+const linkExtractor = (fileData, pathInitial, options) => {
+  const links = markdownLinkExtractor(fileData, true)
+  links.forEach(link=>
+    console.log(link)
+    //  ({
+    //     file: pathInitial,
+    //     link: link.href,
+    //     text: link.text
+    //   })
+  )};
+  // guardar los elementos que necesito y  pasarlo a validate. los obejtos que necesito
 
-// 4
+// 2. reconocer que es un archivo o documento
+// sacar la funcion stat 
+const validateLinks = (routeDirection) => {
+  return new Promise((resolve, reject) => {
+    // try {
+    //   if(verifyFolder(routeDirection)) {
+    //     dirFolder(routeDirection)
+    //   }
+    //   else if(verifyFile(routeDirection)) {
+    //     dirFile()
+    //   }
+    // } catch (error) {
+    //   console.warn('routing no validate')
+    // }
+    fs.stat(routeDirection, (error, stats) => {
+      results = [];
+      if (error) {
+        reject(error);
+      }
+      if (stats.isDirectory()) {
+        resolve(dirFolder(routeDirection));
+      } else if (stats.isFile()) {
+        resolve(dirFile(routeDirection));
+      }
+    });
+  });
+};
+validateLinks(routeDirection);
 
-// Crea una funcion que tenga una condicion primero de verificar si es un archivo valido si es valido
-// si es una carpeta que recorra la carpeta y vea si tiene un archivo md/ si es un archivo verificar si es archivo md.
-//Si no cumple ninguno de los casos mandar un error.
-//Si cumple leer el documento y su contenido
 
 module.exports = () => {};
