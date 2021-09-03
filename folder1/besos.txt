@@ -1,1 +1,19 @@
-try cath se usa cuando usamos async await
+
+
+Necesito validar los links 
+Voy a usar axios para hacer la peticion
+tengo los links es una funcion que los covierte en un array 
+necesito ahora pasar ese array a una funcion que tenga dos argumento las ruta y las options
+la opcion deber ser un boleano que me devuelva true o false
+
+
+Crear una funciion como la del readme md link con path y options 
+
+crear un obejeto que tenga dos validate true  o validar false
+Siendo true status: Código de respuesta HTTP.
+ok: Mensaje fail en caso de fallo u ok en caso de éxito.
+
+Axios:
+recibe un obejeto, entra a el atraves de una promesa y entra la respuesta de la data
+con them.
+

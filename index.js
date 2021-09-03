@@ -2,37 +2,38 @@
 const fs = require("fs");
 const path = require("path");
 const markdownLinkExtractor = require("markdown-link-extractor");
-const routeDirection = path.resolve(process.argv[2]);
-const axios = require('axios');
+const axios = require("axios");
 
-// http
-const linkExtractor = (fileData, pathInitial, options) => {
-  const links = markdownLinkExtractor(fileData, true)
-  let arrayLinks = []; 
-  links.forEach(link=> {
-    const objectLinks = {
-        file: pathInitial,
-        link: link.href,
-        text: link.text
-      };
-      arrayLinks.push(objectLinks);
-      console.log(objectLinks)
-    }
-  )};
-// leer
+const linkExtractor = (dataFile, pathInitial) => {
+      const links = markdownLinkExtractor(dataFile, true).filter(
+        (link) => link.href.includes("https://") || link.href.includes("http://")
+      );
+       let arrayLinks = [];
+        links.forEach((link) => {
+          const objectLinks = {
+            file: pathInitial,
+            link: link.href,
+            text: link.text,
+          };
+          arrayLinks.push(objectLinks);
+         
+        });
+        return arrayLinks; 
 
-// promesa
-const readFile = (filePath) => {
-  readFilePromise(filePath).then((data) => {
-    linkExtractor(data,filePath); // filePath,options
-  });
+};
+
+const  readFile = (filePath) => {
+   readFilePromise(filePath).then((data) => {
+    linkExtractor(data,filePath);
+})
 };
 
 const dirFile = (doc) => {
   const fileExt = path.extname(doc.toLowerCase());
   const mdExt = ".md";
   if (fileExt === mdExt) {
-    readFile(doc);
+   readFile(doc)
+
   } else {
     console.error("no es md");
   }
@@ -46,6 +47,7 @@ const readFilePromise = (filePath) => {
         resolve(data);
       }
     });
+   
   });
 };
 
@@ -61,20 +63,20 @@ const readFolderPromise = (filePath) => {
   });
 };
 
-  const dirFolder = (dirPath) => {
-    const pathFolder = dirPath;
-    readFolderPromise(pathFolder)
-      .then((files) => {
-        files.forEach((file) => {
-          const fullPath = path.join(pathFolder, file);
-          documentOrFolder(fullPath);
-          console.log(fullPath);
-        });
-      })
-      .catch((err) => {
-        console.log("could not find directory " + pathFolder);
+const dirFolder = (dirPath) => {
+  const pathFolder = dirPath;
+  readFolderPromise(pathFolder)
+    .then((files) => {
+      files.forEach((file) => {
+        const fullPath = path.join(pathFolder, file);
+        documentOrFolder(fullPath);
+        console.log(fullPath);
       });
-  };
+    })
+    .catch((err) => {
+      console.log("could not find directory " + pathFolder);
+    });
+};
 
 const documentOrFolder = (routeDirection) => {
   return new Promise((resolve, reject) => {
@@ -86,12 +88,13 @@ const documentOrFolder = (routeDirection) => {
       if (stats.isDirectory()) {
         resolve(dirFolder(routeDirection));
       } else if (stats.isFile()) {
-        resolve(dirFile(routeDirection));
+        resolve(dirFile(routeDirection) 
+        
+        );
       }
     });
   });
 };
-documentOrFolder(routeDirection);
+// documentOrFolder(routeDirection);
 
-
-module.exports = () => {};
+module.exports = { documentOrFolder };
