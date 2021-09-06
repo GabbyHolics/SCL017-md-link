@@ -2,7 +2,9 @@
 const fs = require("fs");
 const path = require("path");
 const markdownLinkExtractor = require("markdown-link-extractor");
+const routeDirection = path.resolve(process.argv[2]);
 const axios = require("axios");
+
 
 const linkExtractor = (dataFile, pathInitial) => {
       const links = markdownLinkExtractor(dataFile, true).filter(
@@ -22,21 +24,30 @@ const linkExtractor = (dataFile, pathInitial) => {
 
 };
 
-const  readFile = (filePath) => {
-   readFilePromise(filePath).then((data) => {
-    linkExtractor(data,filePath);
-})
+const readFile = (filePath) => {
+  return new Promise((resolve) => {
+    readFilePromise(filePath).then(data=> resolve(linkExtractor(data, filePath)))
+  
+  });
 };
 
 const dirFile = (doc) => {
-  const fileExt = path.extname(doc.toLowerCase());
-  const mdExt = ".md";
-  if (fileExt === mdExt) {
-   readFile(doc)
-
-  } else {
-    console.error("no es md");
-  }
+  return new Promise ((resolve,reject) => {
+    try {
+      const fileExt = path.extname(doc.toLowerCase());
+      const mdExt = ".md";
+      if (fileExt === mdExt) {
+      readFile(doc).then(links=> resolve(links))
+    
+      } else {
+        console.error("no es md");
+      }
+    } catch (error) {
+      reject(error);
+    }
+ 
+  })
+ 
 };
 const readFilePromise = (filePath) => {
   return new Promise((resolve, reject) => {
@@ -70,7 +81,7 @@ const dirFolder = (dirPath) => {
       files.forEach((file) => {
         const fullPath = path.join(pathFolder, file);
         documentOrFolder(fullPath);
-        console.log(fullPath);
+        // console.log(fullPath);
       });
     })
     .catch((err) => {
@@ -88,13 +99,24 @@ const documentOrFolder = (routeDirection) => {
       if (stats.isDirectory()) {
         resolve(dirFolder(routeDirection));
       } else if (stats.isFile()) {
-        resolve(dirFile(routeDirection) 
-        
-        );
+        dirFile(routeDirection).then(links=> resolve(links));
       }
     });
   });
 };
-// documentOrFolder(routeDirection);
+
+
+// const mdLinks = (routeDirection) => {
+//   return new Promise ((res, reject) => {
+//     try {
+//       documentOrFolder(routeDirection)
+//       res()
+//     } catch (error) {
+      
+//     }
+//   })
+
+documentOrFolder(routeDirection).then(link => console.log(link)) ;
+
 
 module.exports = { documentOrFolder };
