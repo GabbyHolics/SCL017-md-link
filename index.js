@@ -5,49 +5,44 @@ const markdownLinkExtractor = require("markdown-link-extractor");
 const routeDirection = path.resolve(process.argv[2]);
 const axios = require("axios");
 
-
 const linkExtractor = (dataFile, pathInitial) => {
-      const links = markdownLinkExtractor(dataFile, true).filter(
-        (link) => link.href.includes("https://") || link.href.includes("http://")
-      );
-       let arrayLinks = [];
-        links.forEach((link) => {
-          const objectLinks = {
-            file: pathInitial,
-            link: link.href,
-            text: link.text,
-          };
-          arrayLinks.push(objectLinks);
-         
-        });
-        return arrayLinks; 
-
+  const links = markdownLinkExtractor(dataFile, true).filter(
+    (link) => link.href.includes("https://") || link.href.includes("http://")
+  );
+  let arrayLinks = [];
+  links.forEach((link) => {
+    const objectLinks = {
+      file: pathInitial,
+      link: link.href,
+      text: link.text,
+    };
+    arrayLinks.push(objectLinks);
+  });
+  return arrayLinks;
 };
 
 const readFile = (filePath) => {
   return new Promise((resolve) => {
-    readFilePromise(filePath).then(data=> resolve(linkExtractor(data, filePath)))
-  
+    readFilePromise(filePath).then((data) =>
+      resolve(linkExtractor(data, filePath))
+    );
   });
 };
 
 const dirFile = (doc) => {
-  return new Promise ((resolve,reject) => {
+  return new Promise((resolve, reject) => {
     try {
       const fileExt = path.extname(doc.toLowerCase());
       const mdExt = ".md";
       if (fileExt === mdExt) {
-      readFile(doc).then(links=> resolve(links))
-    
+        readFile(doc).then((links) => resolve(links));
       } else {
         console.error("no es md");
       }
     } catch (error) {
       reject(error);
     }
- 
-  })
- 
+  });
 };
 const readFilePromise = (filePath) => {
   return new Promise((resolve, reject) => {
@@ -58,7 +53,6 @@ const readFilePromise = (filePath) => {
         resolve(data);
       }
     });
-   
   });
 };
 
@@ -81,7 +75,6 @@ const dirFolder = (dirPath) => {
       files.forEach((file) => {
         const fullPath = path.join(pathFolder, file);
         documentOrFolder(fullPath);
-        // console.log(fullPath);
       });
     })
     .catch((err) => {
@@ -99,24 +92,44 @@ const documentOrFolder = (routeDirection) => {
       if (stats.isDirectory()) {
         resolve(dirFolder(routeDirection));
       } else if (stats.isFile()) {
-        dirFile(routeDirection).then(links=> resolve(links));
+        dirFile(routeDirection).then((links) => resolve(links));
       }
     });
   });
 };
+// let promises = new promises 
 
+const mdLinks = (routeDirection) => {
+  return new Promise((res, reject) => {
+    documentOrFolder(routeDirection)
+      .then((links) => {
+        links.map((link) => {
+          return axios
+            .get(link.link)
+            .then((response) => {
+              link.status = response.status;
+              if (response.status === 200) {
+                link.ok = response.statusText;
+              }
+            
+             res(link);
+            })
+            .catch((error) => {
+              link.status = error.statusCode;
+              link.ok = "fail";
+              res(link);
+            });
+        });
+        console.log(links)// pormises .all 
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+mdLinks(routeDirection)
+  .then((res) => console.log(res))
+  .catch((err) => console.log(err));
+// documentOrFolder(routeDirection).then(link => console.log(link)) ;
 
-// const mdLinks = (routeDirection) => {
-//   return new Promise ((res, reject) => {
-//     try {
-//       documentOrFolder(routeDirection)
-//       res()
-//     } catch (error) {
-      
-//     }
-//   })
-
-documentOrFolder(routeDirection).then(link => console.log(link)) ;
-
-
-module.exports = { documentOrFolder };
+module.exports = { mdLinks };
