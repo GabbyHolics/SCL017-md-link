@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const { mdLinks } = require('./index.js');
 const path = require("path");
 const routeDirection = path.resolve(process.argv[2]);
