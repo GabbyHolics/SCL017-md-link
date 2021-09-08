@@ -99,37 +99,46 @@ const documentOrFolder = (routeDirection) => {
 };
 // let promises = new promises 
 
-const mdLinks = (routeDirection) => {
+const getStatusLinks = (routeDirection) =>{
+  return new Promise((res) => {
+    return axios
+            .get(routeDirection.link)
+            .then((response) => {
+              routeDirection.status = response.status;
+              if (response.status === 200) {
+                routeDirection.ok = response.statusText;
+              }
+             res(routeDirection);
+            })
+            .catch((error) => {
+              routeDirection.status === 404 ;
+              routeDirection.ok = "fail";
+              res(routeDirection);
+            });
+  })
+}
+const searchLinks = (routeDirection) => {
+  const promiseArray = []
   return new Promise((res, reject) => {
     documentOrFolder(routeDirection)
       .then((links) => {
         links.map((link) => {
-          return axios
-            .get(link.link)
-            .then((response) => {
-              link.status = response.status;
-              if (response.status === 200) {
-                link.ok = response.statusText;
-              }
-            
-             res(link);
-            })
-            .catch((error) => {
-              link.status = error.statusCode;
-              link.ok = "fail";
-              res(link);
-            });
+          promiseArray.push(getStatusLinks(link))
         });
-        console.log(links)// pormises .all 
+        Promise.all(promiseArray)
+        .then( result=> res(result))
+        .catch( err=> console.log(err))// pormises .all 
       })
       .catch((error) => {
         reject(error);
       });
   });
 };
-mdLinks(routeDirection)
-  .then((res) => console.log(res))
-  .catch((err) => console.log(err));
+
 // documentOrFolder(routeDirection).then(link => console.log(link)) ;
 
-module.exports = { mdLinks };
+module.exports = { 
+  searchLinks,
+  getStatusLinks,
+  documentOrFolder
+};

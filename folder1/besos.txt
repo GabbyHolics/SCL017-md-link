@@ -7,3 +7,7 @@ Necesito hacer una peticion HTTP para poder entrar a los link y validarlos
 1 Hacer la peticion metiendo a los link
 2 crear opcines depediento el status
 3 validar estando ok o false
+
+crar paquete
+tiene que tener un nombre unico se separados por guion
+
