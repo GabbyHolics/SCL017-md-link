@@ -2,7 +2,6 @@
 const fs = require("fs");
 const path = require("path");
 const markdownLinkExtractor = require("markdown-link-extractor");
-const routeDirection = path.resolve(process.argv[2]);
 const axios = require("axios");
 
 const linkExtractor = (dataFile, pathInitial) => {
@@ -97,37 +96,37 @@ const documentOrFolder = (routeDirection) => {
     });
   });
 };
-// let promises = new promises 
+// let promises = new promises
 
-const getStatusLinks = (routeDirection) =>{
+const getStatusLinks = (routeDirection) => {
   return new Promise((res) => {
     return axios
-            .get(routeDirection.link)
-            .then((response) => {
-              routeDirection.status = response.status;
-              if (response.status === 200) {
-                routeDirection.ok = response.statusText;
-              }
-             res(routeDirection);
-            })
-            .catch((error) => {
-              routeDirection.status === 404 ;
-              routeDirection.ok = "fail";
-              res(routeDirection);
-            });
-  })
-}
+      .get(routeDirection.link)
+      .then((response) => {
+        routeDirection.status = response.status;
+        if (response.status === 200) {
+          routeDirection.ok = response.statusText;
+        }
+        res(routeDirection);
+      })
+      .catch((error) => {
+        routeDirection.status === 404;
+        routeDirection.ok = "fail";
+        res(routeDirection);
+      });
+  });
+};
 const searchLinks = (routeDirection) => {
-  const promiseArray = []
+  const promiseArray = [];
   return new Promise((res, reject) => {
     documentOrFolder(routeDirection)
       .then((links) => {
         links.map((link) => {
-          promiseArray.push(getStatusLinks(link))
+          promiseArray.push(getStatusLinks(link));
         });
         Promise.all(promiseArray)
-        .then( result=> res(result))
-        .catch( err=> console.log(err))// pormises .all 
+          .then((result) => res(result))
+          .catch((err) => console.log(err)); // pormises .all
       })
       .catch((error) => {
         reject(error);
@@ -135,10 +134,24 @@ const searchLinks = (routeDirection) => {
   });
 };
 
+const mdLinks = (routeDirection, options = { validate: false }) => {
+  return new Promise((res, reject) => {
+    try {
+      if (!options.validate) {
+        documentOrFolder(routeDirection).then(arrayLinksData => res(arrayLinksData));
+      } else if (options.validate) {
+        searchLinks(routeDirection).then((validateLinks) => res(validateLinks));
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 // documentOrFolder(routeDirection).then(link => console.log(link)) ;
 
-module.exports = { 
+module.exports = {
+  mdLinks,
   searchLinks,
   getStatusLinks,
-  documentOrFolder
+  documentOrFolder,
 };
