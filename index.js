@@ -68,17 +68,19 @@ const readFolderPromise = (filePath) => {
 };
 // retornar el result 
 const dirFolder = (dirPath) => {
-  const pathFolder = dirPath;
-  readFolderPromise(pathFolder)
-    .then((files) => {
-      files.forEach((file) => {
-        const fullPath = path.join(pathFolder, file);
-        documentOrFolder(fullPath).then((res) => console.log( 'hola' + res));
+  return new Promise ((resolve) =>{ 
+    const pathFolder = dirPath;
+    readFolderPromise(pathFolder)
+      .then((files) => {
+        files.forEach((file) => {
+          const fullPath = path.join(pathFolder, file);
+          documentOrFolder(fullPath).then((res) => resolve(res));
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+   })
 };
 
 const documentOrFolder = (routeDirection) => {
