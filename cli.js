@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const { mdLinks } = require('./index.js');
+const { mdLinks } = require('./md-links.js');
 const path = require("path");
 const routeDirection = path.resolve(process.argv[2]);
 const option = process.argv[3];
