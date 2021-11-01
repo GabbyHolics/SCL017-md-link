@@ -1,4 +1,3 @@
-// 1. obtener ruta
 const fs = require("fs");
 const path = require("path");
 const markdownLinkExtractor = require("markdown-link-extractor");
@@ -66,9 +65,9 @@ const readFolderPromise = (filePath) => {
     });
   });
 };
-// retornar el result 
+
 const dirFolder = (dirPath) => {
-  return new Promise ((resolve) =>{ 
+  return new Promise((resolve) => {
     const pathFolder = dirPath;
     readFolderPromise(pathFolder)
       .then((files) => {
@@ -80,7 +79,7 @@ const dirFolder = (dirPath) => {
       .catch((err) => {
         console.log(err);
       });
-   })
+  });
 };
 
 const documentOrFolder = (routeDirection) => {
@@ -97,7 +96,6 @@ const documentOrFolder = (routeDirection) => {
     });
   });
 };
-// let promises = new promises
 
 const getStatusLinks = (routeDirection) => {
   return new Promise((res) => {
@@ -127,7 +125,7 @@ const searchLinks = (routeDirection) => {
         });
         Promise.all(promiseArray)
           .then((result) => res(result))
-          .catch((err) => console.log(err)); // pormises .all
+          .catch((err) => console.log(err));
       })
       .catch((error) => {
         reject(error);
@@ -139,7 +137,9 @@ const mdLinks = (routeDirection, options = { validate: false }) => {
   return new Promise((res, reject) => {
     try {
       if (!options.validate) {
-        documentOrFolder(routeDirection).then(arrayLinksData => res(arrayLinksData));
+        documentOrFolder(routeDirection).then((arrayLinksData) =>
+          res(arrayLinksData)
+        );
       } else if (options.validate) {
         searchLinks(routeDirection).then((validateLinks) => res(validateLinks));
       }
@@ -148,7 +148,6 @@ const mdLinks = (routeDirection, options = { validate: false }) => {
     }
   });
 };
-// documentOrFolder(routeDirection).then(link => console.log(link)) ;
 
 module.exports = {
   mdLinks,

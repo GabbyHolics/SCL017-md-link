@@ -5,13 +5,3 @@ describe('mdLinks', () => {
     expect(typeof mdLinks).toBe('function');
   });
 });
-
-
-
-// describe('mdLinks', () => {
-
-//   it(function, () => {
-//     console.log('FIX ME!');
-//   });
-
-// });

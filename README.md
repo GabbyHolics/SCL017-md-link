@@ -21,7 +21,7 @@ npm i -g md-link-gabbyholics
  
 # API 
 
-![md-links](img\Diagrama-de-flujo.jpeg)
+![md-links](img/Diagrama-de-flujo.jpeg)
 
 mdLinkValidator(routeDirection, options)
 
